@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+  <EditTextPreference android:key="passwords"
+    android:title="@string/settings_password"
+    android:summary="@string/settings_password_long"
+    android:defaultValue="/sdcard/passwords.gpg" />
+  <CheckBoxPreference android:key="encrypted"
+    android:title="@string/settings_encrypted"
+    android:summaryOn="@string/settings_encrypted_on"
+    android:summaryOff="@string/settings_encrypted_off"
+    android:defaultValue="true" />
+</PreferenceScreen>
