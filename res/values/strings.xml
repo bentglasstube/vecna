@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Vecna</string>
+
+  <string name="show_entry_title">View Password</string>
+  <string name="show_entry_account">Account Name</string>
+  <string name="show_entry_user">User ID</string>
+  <string name="show_entry_password">Password</string>
+  <string name="show_entry_show">Show</string>
+  <string name="show_entry_hide">Hide</string>
+  <string name="show_entry_copy">Copy</string>
+  <string name="show_entry_close">Close</string>
+  <string name="copied">Password for %s copied to clipboard.</string>
+
+  <string name="settings_password">Password File</string>
+  <string name="settings_password_long">File containing all of your passwords</string>
+  <string name="settings_encrypted">Encryption</string>
+  <string name="settings_encrypted_on">Password file is GPG encrypted</string>
+  <string name="settings_encrypted_off">Password file is not encrypted</string>
+
+  <string name="loading">Loading...</string>
+  <string name="error_could_not_decrypt">Couldn\'t decrypt password file</string>
+  <string name="error_file_not_found">Password file not found</string>
+  <string name="error_file_format">Unable to read password file</string>
+  <string name="error_unknown">Unknown error</string>
+</resources>
