@@ -219,6 +219,12 @@ public class Vecna extends ListActivity {
     setListAdapter(adapter);
 
     Security.addProvider(new BouncyCastleProvider());
+
+    if (savedInstanceState != null) {
+      passphrase = savedInstanceState.getString("passphrase");
+      adapter.populate(savedInstanceState.getStringArray("entries"));
+      adapter.notifyDataSetChanged();
+    }
   }
     
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -243,7 +249,8 @@ public class Vecna extends ListActivity {
 
   @Override protected void onResume() {
     super.onResume();
-    updateEntries();
+
+    if (adapter.getCount() == 0) updateEntries();
   }
 
   @Override protected void onListItemClick(ListView parent, View v, int pos, long id) {
@@ -294,6 +301,12 @@ public class Vecna extends ListActivity {
     });
 
     dialog.show();
+  }
+
+  @Override public void onSaveInstanceState(Bundle savedInstanceState) {
+    super.onSaveInstanceState(savedInstanceState);
+    savedInstanceState.putString("passphrase", passphrase);
+    savedInstanceState.putStringArray("entries", adapter.toStringArray());
   }
 
   private void getPassphrase() {
