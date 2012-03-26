@@ -3,10 +3,11 @@
   <EditTextPreference android:key="passwords"
     android:title="@string/settings_password"
     android:summary="@string/settings_password_long"
-    android:defaultValue="/sdcard/passwords.gpg" />
-  <CheckBoxPreference android:key="encrypted"
-    android:title="@string/settings_encrypted"
-    android:summaryOn="@string/settings_encrypted_on"
-    android:summaryOff="@string/settings_encrypted_off"
-    android:defaultValue="true" />
+    android:singleLine="true"
+    android:defaultValue="" />
+  <EditTextPreference android:key="key_file"
+    android:title="@string/settings_key_file"
+    android:summary="@string/settings_key_file_long"
+    android:singleLine="true"
+    android:defaultValue="" />
 </PreferenceScreen>
