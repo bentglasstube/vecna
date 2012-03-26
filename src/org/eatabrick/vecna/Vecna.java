@@ -205,6 +205,8 @@ public class Vecna extends ListActivity {
 
         builder.show();
       }
+
+      findViewById(android.R.id.list).requestFocus();
     }
   }
 
