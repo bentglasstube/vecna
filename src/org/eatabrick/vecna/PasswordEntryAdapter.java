@@ -21,26 +21,29 @@
 
 package org.eatabrick.vecna;
 
-public class Entry {
-  public String account  = "";
-  public String user     = "";
-  public String password = "";
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
-  public Entry(String account, String user, String password) {
-    this.account  = account;
-    this.user     = user;
-    this.password = password;
+import java.util.ArrayList;
+
+public class PasswordEntryAdapter extends ArrayAdapter<Entry> {
+  public PasswordEntryAdapter(Context context) {
+    super(context, android.R.id.empty);
   }
 
-  public Entry(String line) {
-    String[] parts = line.split(" ");
+  @Override public View getView(int pos, View view, ViewGroup group) {
+    if (view == null) {
+      view = View.inflate(getContext(), android.R.layout.two_line_list_item, null);
+    }
 
-    account  = parts[0];
-    user     = parts[1];
-    password = parts[2];
-  }
+    Entry entry = (Entry) getItem(pos);
 
-  public String toString() {
-    return account + " " + user + " " + password;
+    ((TextView) view.findViewById(android.R.id.text1)).setText(entry.account);
+    ((TextView) view.findViewById(android.R.id.text2)).setText(entry.user);
+
+    return view;
   }
 }
