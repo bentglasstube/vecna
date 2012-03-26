@@ -46,4 +46,21 @@ public class PasswordEntryAdapter extends ArrayAdapter<Entry> {
 
     return view;
   }
+
+  public String[] toStringArray() {
+    int count = getCount();
+
+    String[] entries = new String[count];
+    for (int i = 0; i < count; ++i) {
+      entries[i] = getItem(i).toLine();
+    }
+
+    return entries;
+  }
+
+  public void populate(String[] entries) {
+    for (int i = 0; i < entries.length; ++i) {
+      add(new Entry(entries[i]));
+    }
+  }
 }

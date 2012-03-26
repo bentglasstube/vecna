@@ -33,8 +33,8 @@
   <string name="progress_initial">Loading...</string>
   <string name="progress_keyfile">Opening GPG keyring</string>
   <string name="progress_passfile">Opening password file</string>
-  <string name="progress_find_data">Searching password file for encrypted data</string>
-  <string name="progress_find_key">Searching for GPG key ID</string>
+  <string name="progress_find_data">Finding encrypted data</string>
+  <string name="progress_find_key">Extracting private key</string>
   <string name="progress_decrypt">Decrypting password file</string>
   <string name="progress_parse">Parsing password entries</string>
 </resources>

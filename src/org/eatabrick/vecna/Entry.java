@@ -40,7 +40,11 @@ public class Entry {
     password = parts[2];
   }
 
-  public String toString() {
+  public String toLine() {
     return account + " " + user + " " + password;
+  }
+
+  public String toString() {
+    return account + " " + user;
   }
 }
