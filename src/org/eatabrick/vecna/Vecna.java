@@ -6,10 +6,10 @@
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,6 +39,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -75,7 +77,7 @@ public class Vecna extends ListActivity {
   private PasswordEntryAdapter adapter;
   private SharedPreferences settings;
   private String passphrase = "";
-  
+
   private class ReadEntriesTask extends AsyncTask<String, Integer, Integer> {
     ProgressDialog progress;
 
@@ -83,7 +85,7 @@ public class Vecna extends ListActivity {
       adapter.clear();
       adapter.notifyDataSetChanged();
       adapter.setNotifyOnChange(false);
-    
+
       progress = new ProgressDialog(Vecna.this);
       progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
       progress.setMessage(getString(R.string.progress_initial));
@@ -118,7 +120,7 @@ public class Vecna extends ListActivity {
         PGPObjectFactory factory;
 
         publishProgress(R.string.progress_find_data);
-        
+
         factory = new PGPObjectFactory(PGPUtil.getDecoderStream(dataStream));
         PGPEncryptedDataList dataList = null;
 
@@ -227,8 +229,16 @@ public class Vecna extends ListActivity {
       adapter.populate(savedInstanceState.getStringArray("entries"));
       adapter.notifyDataSetChanged();
     }
+
+    getListView().setLongClickable(true);
+    getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
+      public boolean onItemLongClick(AdapterView<?> parent, View v, int pos, long id) {
+        onListItemLongClick(parent, v, pos, id);
+        return true;
+      }
+    });
   }
-    
+
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.main, menu);
@@ -258,6 +268,13 @@ public class Vecna extends ListActivity {
   @Override protected void onListItemClick(ListView parent, View v, int pos, long id) {
     final Entry entry = (Entry) adapter.getItem(pos);
 
+    ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setText(entry.password);
+    Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
+  }
+
+  protected void onListItemLongClick(AdapterView parent, View v, int pos, long id) {
+    final Entry entry = (Entry) adapter.getItem(pos);
+
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
     LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -266,7 +283,7 @@ public class Vecna extends ListActivity {
     ((TextView) layout.findViewById(R.id.account )).setText(entry.account);
     ((TextView) layout.findViewById(R.id.user    )).setText(entry.user);
     ((TextView) layout.findViewById(R.id.password)).setText(entry.password);
-    
+
     builder.setView(layout);
 
     builder.setPositiveButton(R.string.show_entry_copy, new DialogInterface.OnClickListener() {
