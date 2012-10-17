@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -247,12 +248,17 @@ public class Vecna extends ListActivity {
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-      case R.id.settings:
-        Intent intent = new Intent(this, Preferences.class);
-        startActivityForResult(intent, 0);
+      case R.id.search:
+        // just shows the soft keyboard and lets the list view deal with searching
+        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(getListView(), 0);
         return true;
       case R.id.refresh:
         updateEntries();
+        return true;
+      case R.id.settings:
+        Intent intent = new Intent(this, Preferences.class);
+        startActivityForResult(intent, 0);
         return true;
       default:
         return super.onOptionsItemSelected(item);
