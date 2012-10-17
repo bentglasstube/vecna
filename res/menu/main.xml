@@ -4,6 +4,10 @@
     android:icon="@drawable/ic_menu_search"
     android:showAsAction="ifRoom|withText"
     android:title="Search" />
+  <item android:id="@+id/lock"
+    android:icon="@drawable/ic_menu_lock"
+    android:showAsAction="ifRoom|withText"
+    android:title="Lock" />
   <item android:id="@+id/refresh"
     android:icon="@drawable/ic_menu_refresh"
     android:showAsAction="ifRoom|withText"

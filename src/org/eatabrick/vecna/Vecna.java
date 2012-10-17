@@ -253,6 +253,9 @@ public class Vecna extends ListActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
         imm.showSoftInput(getListView(), 0);
         return true;
+      case R.id.lock:
+        // TODO implement locking
+        return true;
       case R.id.refresh:
         updateEntries();
         return true;
@@ -366,5 +369,9 @@ public class Vecna extends ListActivity {
         new ReadEntriesTask().execute(passphrase);
       }
     }
+  }
+
+  private boolean isLocked() {
+    return passphrase.isEmpty();
   }
 }
