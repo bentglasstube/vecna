@@ -220,6 +220,7 @@ public class Vecna extends ListActivity {
         setEmptyText(R.string.empty);
       }
 
+      invalidateOptionsMenu();
       findViewById(android.R.id.list).requestFocus();
     }
   }
@@ -257,6 +258,12 @@ public class Vecna extends ListActivity {
     return true;
   }
 
+  @Override public boolean onPrepareOptionsMenu(Menu menu) {
+    ((MenuItem) menu.findItem(R.id.refresh)).setVisible(!isLocked());
+    ((MenuItem) menu.findItem(R.id.lock)).setVisible(!isLocked());
+    return true;
+  }
+
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.search:
@@ -270,6 +277,7 @@ public class Vecna extends ListActivity {
         setEmptyText(R.string.locked);
         adapter.clear();
         adapter.notifyDataSetChanged();
+        invalidateOptionsMenu();
         return true;
       case R.id.refresh:
         // reload the password file
