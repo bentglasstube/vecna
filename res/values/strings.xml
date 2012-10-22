@@ -29,6 +29,7 @@
   <string name="error_secret_key_missing">No valid secret keys could be found for decryption</string>
   <string name="error_encryption">Password file was not encrypted correctly</string>
   <string name="error_parsing">Password file data is not in the correct format</string>
+  <string name="error_pgp_key">Incorrect passphrase or PGP problem</string>
   <string name="error_unknown">Unknown error</string>
 
   <string name="progress_initial">Loading...</string>

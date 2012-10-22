@@ -60,17 +60,17 @@ import java.security.Security;
 import java.util.Iterator;
 
 import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.openpgp.PGPCompressedData;
 import org.spongycastle.openpgp.PGPEncryptedDataList;
+import org.spongycastle.openpgp.PGPException;
+import org.spongycastle.openpgp.PGPLiteralData;
 import org.spongycastle.openpgp.PGPObjectFactory;
+import org.spongycastle.openpgp.PGPOnePassSignatureList;
 import org.spongycastle.openpgp.PGPPrivateKey;
 import org.spongycastle.openpgp.PGPPublicKeyEncryptedData;
 import org.spongycastle.openpgp.PGPSecretKey;
 import org.spongycastle.openpgp.PGPSecretKeyRingCollection;
 import org.spongycastle.openpgp.PGPUtil;
-import org.spongycastle.openpgp.PGPLiteralData;
-import org.spongycastle.openpgp.PGPOnePassSignatureList;
-import org.spongycastle.openpgp.PGPCompressedData;
-
 
 public class Vecna extends ListActivity {
   private final static String TAG = "Vecna";
@@ -179,6 +179,9 @@ public class Vecna extends ListActivity {
         for (int i = 0; i < lines.length; ++i) {
           adapter.add(new Entry(lines[i]));
         }
+      } catch (PGPException e) {
+        e.printStackTrace();
+        return R.string.error_pgp_key;
       } catch (Exception e) {
         e.printStackTrace();
         return R.string.error_unknown;
@@ -207,6 +210,14 @@ public class Vecna extends ListActivity {
         builder.setPositiveButton(android.R.string.ok, null);
 
         builder.show();
+      }
+
+      // reset passphrase if they enter it incorrectly
+      if (result == R.string.error_pgp_key) {
+        passphrase = "";
+        setEmptyText(R.string.locked);
+      } else {
+        setEmptyText(R.string.empty);
       }
 
       findViewById(android.R.id.list).requestFocus();
