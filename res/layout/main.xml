@@ -11,5 +11,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
-    android:text="@string/empty" />
+    android:text="@string/locked"
+    android:clickable="true"
+    android:onClick="emptyClicked" />
 </LinearLayout>

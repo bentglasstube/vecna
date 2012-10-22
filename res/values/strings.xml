@@ -17,8 +17,9 @@
   <string name="settings_key_file">GPG Keyring File</string>
   <string name="settings_key_file_long">File containing secret keys for decryption</string>
 
-  <string name="empty">No passwords in memory</string>
+  <string name="empty">No passwords found</string>
   <string name="settings">Configure file locations</string>
+  <string name="locked">Tap to unlock passwords</string>
   <string name="prompt">Enter your passphrase:</string>
 
   <string name="error">Error</string>

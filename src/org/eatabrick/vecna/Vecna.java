@@ -254,9 +254,14 @@ public class Vecna extends ListActivity {
         imm.showSoftInput(getListView(), 0);
         return true;
       case R.id.lock:
-        // TODO implement locking
+        // clear the passphrase and passwords from memory
+        passphrase = "";
+        setEmptyText(R.string.locked);
+        adapter.clear();
+        adapter.notifyDataSetChanged();
         return true;
       case R.id.refresh:
+        // reload the password file
         updateEntries();
         return true;
       case R.id.settings:
@@ -271,17 +276,24 @@ public class Vecna extends ListActivity {
   @Override protected void onResume() {
     super.onResume();
 
+    // Automatically show passwords on launch
     if (adapter.getCount() == 0) updateEntries();
   }
 
   @Override protected void onListItemClick(ListView parent, View v, int pos, long id) {
-    final Entry entry = (Entry) adapter.getItem(pos);
-
+    // copy the password to the clipboard
+    Entry entry = (Entry) adapter.getItem(pos);
     ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setText(entry.password);
     Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
   }
 
+  public void emptyClicked(View v) {
+    // get the passphrase if we don't know it
+    if (isLocked()) getPassphrase();
+  }
+
   protected void onListItemLongClick(AdapterView parent, View v, int pos, long id) {
+    // show a crazy dialog for the entry
     final Entry entry = (Entry) adapter.getItem(pos);
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -360,15 +372,19 @@ public class Vecna extends ListActivity {
     TextView empty = (TextView) findViewById(android.R.id.empty);
 
     if (settings.getString("passwords", "").isEmpty() || settings.getString("key_file", "").isEmpty()) {
-      empty.setText(R.string.settings);
+      setEmptyText(R.string.settings);
     } else {
-      empty.setText(R.string.empty);
+      setEmptyText(R.string.locked);
       if (passphrase.isEmpty()) {
         getPassphrase();
       } else {
         new ReadEntriesTask().execute(passphrase);
       }
     }
+  }
+
+  private void setEmptyText(int stringResource) {
+    ((TextView) findViewById(android.R.id.empty)).setText(stringResource);
   }
 
   private boolean isLocked() {
