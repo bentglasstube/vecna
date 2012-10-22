@@ -371,8 +371,8 @@ public class Vecna extends ListActivity {
     builder.setView(pass);
     builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int which) {
-        Vecna.this.passphrase = pass.getText().toString();
-        new ReadEntriesTask().execute(passphrase);
+        passphrase = pass.getText().toString();
+        if (!passphrase.isEmpty()) new ReadEntriesTask().execute(passphrase);
       }
     });
 
