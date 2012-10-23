@@ -28,20 +28,21 @@ import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.inputmethod.InputMethodManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -284,8 +285,12 @@ public class Vecna extends ListActivity {
         updateEntries();
         return true;
       case R.id.settings:
-        Intent intent = new Intent(this, Preferences.class);
-        startActivityForResult(intent, 0);
+        Intent settingsIntent = new Intent(this, Preferences.class);
+        startActivityForResult(settingsIntent, 0);
+        return true;
+      case R.id.help:
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/bentglasstube/vecna#readme"));
+        startActivity(browserIntent);
         return true;
       default:
         return super.onOptionsItemSelected(item);
