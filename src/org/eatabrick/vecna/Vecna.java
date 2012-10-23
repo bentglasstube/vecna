@@ -260,8 +260,10 @@ public class Vecna extends ListActivity {
   }
 
   @Override public boolean onPrepareOptionsMenu(Menu menu) {
-    ((MenuItem) menu.findItem(R.id.refresh)).setVisible(!isLocked());
-    ((MenuItem) menu.findItem(R.id.lock)).setVisible(!isLocked());
+    boolean unlocked = !isLocked();
+    ((MenuItem) menu.findItem(R.id.search)).setVisible(unlocked);
+    ((MenuItem) menu.findItem(R.id.refresh)).setVisible(unlocked);
+    ((MenuItem) menu.findItem(R.id.lock)).setVisible(unlocked);
     return true;
   }
 
