@@ -32,12 +32,28 @@ functionality into a future version of the app.
 
 Now you should be all set to view your passwords on your phone.
 
+Usage
+-----
+
+Tapping on an entry in the password listing will copy that password to your
+clipboard to be pasted into whatever other app you need it in.  Long pressing
+an entry will bring up a dialog with the details about the entry.  None of the
+entries are editable at this time.
+
+When you quit the app, it will try to keep all the entries in memory so that
+they are immediately available next time you open the app.  If you do not want
+it to do this, you can press the lock option in the menu to have it forget them
+all.
+
+Pressing the search button will let you type the first few letters of an
+account name to filter the listing to just those matching what you type.  If
+you have a hardware keyboard, you can just type to filter the listing.
+
 Known Bugs
 ----------
 
-Currently, if anything goes wrong during decryption, a generic "unknown error"
-message is displayed.  It should at least check if the wrong passphrase was
-supplied and inform the user of that error.
+I don't know of any bugs at the moment.  If you find one, please report it on
+github.
 
 Planned Features
 ----------------
