@@ -21,10 +21,32 @@
 
 package org.eatabrick.vecna;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Iterator;
+
+import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.openpgp.PGPCompressedData;
+import org.spongycastle.openpgp.PGPEncryptedDataList;
+import org.spongycastle.openpgp.PGPException;
+import org.spongycastle.openpgp.PGPLiteralData;
+import org.spongycastle.openpgp.PGPObjectFactory;
+import org.spongycastle.openpgp.PGPPrivateKey;
+import org.spongycastle.openpgp.PGPPublicKeyEncryptedData;
+import org.spongycastle.openpgp.PGPSecretKey;
+import org.spongycastle.openpgp.PGPSecretKeyRingCollection;
+import org.spongycastle.openpgp.PGPUtil;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,37 +63,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.Security;
-import java.util.Iterator;
-
-import org.spongycastle.jce.provider.BouncyCastleProvider;
-import org.spongycastle.openpgp.PGPCompressedData;
-import org.spongycastle.openpgp.PGPEncryptedDataList;
-import org.spongycastle.openpgp.PGPException;
-import org.spongycastle.openpgp.PGPLiteralData;
-import org.spongycastle.openpgp.PGPObjectFactory;
-import org.spongycastle.openpgp.PGPOnePassSignatureList;
-import org.spongycastle.openpgp.PGPPrivateKey;
-import org.spongycastle.openpgp.PGPPublicKeyEncryptedData;
-import org.spongycastle.openpgp.PGPSecretKey;
-import org.spongycastle.openpgp.PGPSecretKeyRingCollection;
-import org.spongycastle.openpgp.PGPUtil;
 
 public class Vecna extends ListActivity {
   private final static String TAG = "Vecna";
@@ -271,7 +269,7 @@ public class Vecna extends ListActivity {
     switch (item.getItemId()) {
       case R.id.search:
         // just shows the soft keyboard and lets the list view deal with searching
-        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(getListView(), 0);
         return true;
       case R.id.lock:
@@ -309,7 +307,8 @@ public class Vecna extends ListActivity {
   @Override protected void onListItemClick(ListView parent, View v, int pos, long id) {
     // copy the password to the clipboard
     Entry entry = (Entry) adapter.getItem(pos);
-    ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setText(entry.password);
+    ClipData clip = ClipData.newPlainText("password", entry.password);
+    ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);
     Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
   }
 
@@ -335,7 +334,8 @@ public class Vecna extends ListActivity {
 
     builder.setPositiveButton(R.string.show_entry_copy, new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int id) {
-        ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setText(entry.password);
+   	    ClipData clip = ClipData.newPlainText("password", entry.password);
+   	    ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);
         Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
       }
     });
@@ -346,10 +346,10 @@ public class Vecna extends ListActivity {
     final AlertDialog dialog = builder.create();
 
     dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-      @Override public void onShow(DialogInterface dialogInterface) {
+      public void onShow(DialogInterface dialogInterface) {
         final Button show = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
         show.setOnClickListener(new View.OnClickListener() {
-          @Override public void onClick(View view) {
+          public void onClick(View view) {
             EditText password = (EditText) layout.findViewById(R.id.password);
 
             if (show.getText().equals(getString(R.string.show_entry_show))) {
@@ -395,8 +395,6 @@ public class Vecna extends ListActivity {
   }
 
   private void updateEntries() {
-    TextView empty = (TextView) findViewById(android.R.id.empty);
-
     if (settings.getString("passwords", "").isEmpty() || settings.getString("key_file", "").isEmpty()) {
       setEmptyText(R.string.settings);
     } else {
