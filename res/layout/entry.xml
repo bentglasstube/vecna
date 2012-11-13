@@ -4,9 +4,9 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent" >
   <TextView android:text="@string/show_entry_account" />
-  <EditText android:id="@+id/account"  android:singleLine="true" />
+  <EditText android:id="@+id/account"  android:singleLine="true" android:inputType="text" />
   <TextView android:text="@string/show_entry_user" />
-  <EditText android:id="@+id/user"     android:singleLine="true" />
+  <EditText android:id="@+id/user"     android:singleLine="true" android:inputType="text" />
   <TextView android:text="@string/show_entry_password" />
-  <EditText android:id="@+id/password" android:singleLine="true" android:password="true" />
+  <EditText android:id="@+id/password" android:singleLine="true" android:inputType="textPassword" />
 </TableLayout>

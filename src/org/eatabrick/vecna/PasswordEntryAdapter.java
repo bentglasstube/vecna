@@ -27,8 +27,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class PasswordEntryAdapter extends ArrayAdapter<Entry> {
   public PasswordEntryAdapter(Context context) {
     super(context, android.R.id.empty);
