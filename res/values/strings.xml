@@ -23,6 +23,7 @@
   <string name="prompt">Enter your passphrase:</string>
 
   <string name="error">Error</string>
+  <string name="error_algorithm">Algorithm not implemented: %s</string>
   <string name="error_password_file_not_found">Password file not found</string>
   <string name="error_key_file_not_found">Key file not found</string>
   <string name="error_no_data_in_file">No encrypted data found in password file</string>

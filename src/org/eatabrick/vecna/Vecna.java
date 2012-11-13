@@ -77,6 +77,8 @@ public class Vecna extends ListActivity {
   private PasswordEntryAdapter adapter;
   private SharedPreferences settings;
   private String passphrase = "";
+  
+  private String extraInformation = "";
 
   private class ReadEntriesTask extends AsyncTask<String, Integer, Integer> {
     ProgressDialog progress;
@@ -85,6 +87,8 @@ public class Vecna extends ListActivity {
       adapter.clear();
       adapter.notifyDataSetChanged();
       adapter.setNotifyOnChange(false);
+      
+      extraInformation = "";
 
       progress = new ProgressDialog(Vecna.this);
       progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -180,6 +184,10 @@ public class Vecna extends ListActivity {
         }
       } catch (PGPException e) {
         e.printStackTrace();
+    	if (e.getCause() instanceof NoSuchAlgorithmException) {
+    	  extraInformation = e.getCause().getLocalizedMessage();
+    	  return R.string.error_algorithm;
+    	}
         return R.string.error_pgp_key;
       } catch (Exception e) {
         e.printStackTrace();
@@ -204,7 +212,7 @@ public class Vecna extends ListActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(Vecna.this);
 
         builder.setTitle(getString(R.string.error));
-        builder.setMessage(getString(result));
+        builder.setMessage(String.format(getString(result), extraInformation));
         builder.setCancelable(false);
         builder.setPositiveButton(android.R.string.ok, null);
 
@@ -212,7 +220,7 @@ public class Vecna extends ListActivity {
       }
 
       // reset passphrase if they enter it incorrectly
-      if (result == R.string.error_pgp_key) {
+      if (result == R.string.error_pgp_key || result == R.string.error_algorithm) {
         passphrase = "";
         setEmptyText(R.string.locked);
       } else {
