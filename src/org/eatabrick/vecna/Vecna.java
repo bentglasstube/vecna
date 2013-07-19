@@ -77,7 +77,7 @@ public class Vecna extends ListActivity {
   private PasswordEntryAdapter adapter;
   private SharedPreferences settings;
   private String passphrase = "";
-  
+
   private String extraInformation = "";
 
   private class ReadEntriesTask extends AsyncTask<String, Integer, Integer> {
@@ -87,7 +87,7 @@ public class Vecna extends ListActivity {
       adapter.clear();
       adapter.notifyDataSetChanged();
       adapter.setNotifyOnChange(false);
-      
+
       extraInformation = "";
 
       progress = new ProgressDialog(Vecna.this);
@@ -149,14 +149,14 @@ public class Vecna extends ListActivity {
           dataEncrypted = (PGPPublicKeyEncryptedData) it.next();
 
           keySecret = keyring.getSecretKey(dataEncrypted.getKeyID());
-          keyPrivate = keySecret.extractPrivateKey(string[0].toCharArray(), "BC");
+          keyPrivate = keySecret.extractPrivateKey(string[0].toCharArray(), "SC");
         }
 
         if (keyPrivate == null) return R.string.error_secret_key_missing;
 
         publishProgress(R.string.progress_decrypt);
 
-        factory = new PGPObjectFactory(dataEncrypted.getDataStream(keyPrivate, "BC"));
+        factory = new PGPObjectFactory(dataEncrypted.getDataStream(keyPrivate, "SC"));
         Object message = factory.nextObject();
 
         if (message instanceof PGPCompressedData) {
@@ -184,10 +184,10 @@ public class Vecna extends ListActivity {
         }
       } catch (PGPException e) {
         e.printStackTrace();
-    	if (e.getCause() instanceof NoSuchAlgorithmException) {
-    	  extraInformation = e.getCause().getLocalizedMessage();
-    	  return R.string.error_algorithm;
-    	}
+        if (e.getCause() instanceof NoSuchAlgorithmException) {
+          extraInformation = e.getCause().getLocalizedMessage();
+          return R.string.error_algorithm;
+        }
         return R.string.error_pgp_key;
       } catch (Exception e) {
         e.printStackTrace();
@@ -342,8 +342,8 @@ public class Vecna extends ListActivity {
 
     builder.setPositiveButton(R.string.show_entry_copy, new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int id) {
-   	    ClipData clip = ClipData.newPlainText("password", entry.password);
-   	    ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);
+        ClipData clip = ClipData.newPlainText("password", entry.password);
+        ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);
         Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
       }
     });
