@@ -54,7 +54,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.method.PasswordTransformationMethod;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,8 +63,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -362,11 +362,11 @@ public class Vecna extends ListActivity {
 
             if (show.getText().equals(getString(R.string.show_entry_show))) {
               Log.d(TAG, "Show clicked");
-              password.setTransformationMethod(null);
+              password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
               show.setText(R.string.show_entry_hide);
             } else {
               Log.d(TAG, "Hide clicked");
-              password.setTransformationMethod(new PasswordTransformationMethod());
+              password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
               show.setText(R.string.show_entry_show);
             }
           }
@@ -385,8 +385,7 @@ public class Vecna extends ListActivity {
 
   private void getPassphrase() {
     final EditText pass = new EditText(this);
-    pass.setSingleLine();
-    pass.setTransformationMethod(new PasswordTransformationMethod());
+    pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
