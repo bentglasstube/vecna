@@ -1,0 +1,58 @@
+#!/usr/bin/env perl
+
+use 5.010;
+use strict;
+use warnings;
+
+my %sizes = (
+  mdpi    => [ 24,  32,  48 ],
+  hdpi    => [ 36,  48,  72 ],
+  xhdpi   => [ 48,  64,  96 ],
+  xxhdpi  => [ 72,  96, 144 ],
+  xxxhdpi => [ 96, 128, 192 ],
+);
+
+my @icons = qw(search lock);
+
+sub run {
+  say join ' ', @_;
+  system @_;
+}
+
+sub svg2png {
+  my ($source, $dest, $size, $id) = @_;
+
+  my @params = (
+    $source, '--export-png', $dest, '--export-height', $size, '--export-width',
+    $size
+  );
+
+  push @params, '--export-id-only', '--export-id', $id if $id;
+
+  run('inkscape', @params);
+}
+
+sub pad {
+  my ($file, $original, $padded) = @_;
+  my $border = ($padded - $original) / 2;
+
+  run('convert', $file, '-bordercolor', 'none', '-border', $border, $file);
+}
+
+for my $icon (@icons) {
+  for my $size (keys %sizes) {
+    my $file = "res/drawable-$size/ic_menu_$icon.png";
+
+    run('mkdir', '-p', "res/drawable-$size");
+
+    svg2png('art/icons.svg', $file, $sizes{$size}[0], $icon);
+    pad($file, $sizes{$size}[0], $sizes{$size}[1]);
+  }
+}
+
+for my $size (keys %sizes) {
+  my $file = "res/drawable-$size/ic_launcher.png";
+  svg2png('art/launcher.svg', $file, $sizes{$size}[2]);
+}
+
+svg2png('art/launcher.svg', 'art/icon.png', 512);
