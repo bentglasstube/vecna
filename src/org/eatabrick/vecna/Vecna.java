@@ -62,16 +62,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Vecna extends ListActivity {
+public class Vecna extends ListActivity implements SearchView.OnQueryTextListener {
   private final static String TAG = "Vecna";
 
   private PasswordEntryAdapter adapter;
@@ -232,6 +233,15 @@ public class Vecna extends ListActivity {
     }
   }
 
+  @Override public boolean onQueryTextChange(String newText) {
+    adapter.getFilter().filter(newText);
+    return true;
+  }
+
+  @Override public boolean onQueryTextSubmit(String query) {
+    return true;
+  }
+
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
@@ -262,6 +272,11 @@ public class Vecna extends ListActivity {
   @Override public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.main, menu);
+
+    SearchView search = (SearchView) menu.findItem(R.id.search).getActionView();
+    search.setOnQueryTextListener(this);
+    search.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+
     return true;
   }
 
@@ -275,11 +290,6 @@ public class Vecna extends ListActivity {
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-      case R.id.search:
-        // just shows the soft keyboard and lets the list view deal with searching
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(getListView(), 0);
-        return true;
       case R.id.lock:
         // clear the passphrase and passwords from memory
         passphrase = "";
