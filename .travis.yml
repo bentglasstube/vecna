@@ -5,5 +5,4 @@ android:
     - android-19
   licenses:
     - android-sdk-license-*
-install: ant deps
 script: ant clean debug
