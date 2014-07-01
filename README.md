@@ -1,15 +1,17 @@
 Vecna Password Manager
 ======================
 
-A password manager that uses a GPG encrypted file to safely store your passwords
-on your phone.
+[![Build Status](https://travis-ci.org/bentglasstube/vecna.png?branch=master)](https://travis-ci.org/bentglasstube/vecna)
+
+A password manager that uses a GPG encrypted file to safely store your
+passwords on your phone.
 
 Setup
 -----
 
 First, you will need to create a GPG key pair.  If you don't know what this
-means, you are probably not in the target audience for this app.  After you have
-created your key pair, export the secret key and copy it to your phone
+means, you are probably not in the target audience for this app.  After you
+have created your key pair, export the secret key and copy it to your phone
 somewhere.
 
 I'm not sure if this app will work with GPG keys from Android Privacy Guard.  I
@@ -53,7 +55,7 @@ Known Bugs
 ----------
 
 I don't know of any bugs at the moment.  If you find one, please report it on
-github.
+the [GitHub issue tracker](https://github.com/bentglasstube/vecna/issues).
 
 Planned Features
 ----------------
