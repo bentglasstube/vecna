@@ -313,7 +313,7 @@ public class Vecna extends ActionBarListActivity implements SearchView.OnQueryTe
         startActivityForResult(settingsIntent, 0);
         return true;
       case R.id.help:
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/bentglasstube/vecna#readme"));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/bentglasstube/vecna/blob/master/README.md"));
         startActivity(browserIntent);
         return true;
       default:
