@@ -42,16 +42,15 @@ import org.spongycastle.openpgp.PGPSecretKeyRingCollection;
 import org.spongycastle.openpgp.PGPUtil;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
@@ -68,11 +67,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Vecna extends ListActivity implements SearchView.OnQueryTextListener {
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
+
+public class Vecna extends ActionBarListActivity implements SearchView.OnQueryTextListener {
   private final static String TAG = "Vecna";
 
   private PasswordEntryAdapter adapter;
@@ -228,7 +229,7 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
         setEmptyText(R.string.empty);
       }
 
-      invalidateOptionsMenu();
+      supportInvalidateOptionsMenu();
       findViewById(android.R.id.list).requestFocus();
     }
   }
@@ -273,9 +274,14 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.main, menu);
 
-    SearchView search = (SearchView) menu.findItem(R.id.search).getActionView();
-    search.setOnQueryTextListener(this);
-    search.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+    SearchView search = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+
+    if (search != null) {
+      search.setOnQueryTextListener(this);
+      search.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+    } else {
+      Log.d(TAG, "Couldn't find search item");
+    }
 
     return true;
   }
@@ -296,7 +302,7 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
         setEmptyText(R.string.locked);
         adapter.clear();
         adapter.notifyDataSetChanged();
-        invalidateOptionsMenu();
+        supportInvalidateOptionsMenu();
         return true;
       case R.id.refresh:
         // reload the password file
@@ -323,11 +329,7 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
   }
 
   @Override protected void onListItemClick(ListView parent, View v, int pos, long id) {
-    // copy the password to the clipboard
-    Entry entry = (Entry) adapter.getItem(pos);
-    ClipData clip = ClipData.newPlainText("password", entry.password);
-    ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);
-    Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
+    copyPassword((Entry) adapter.getItem(pos));
   }
 
   public void emptyClicked(View v) {
@@ -352,9 +354,7 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
 
     builder.setPositiveButton(R.string.show_entry_copy, new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int id) {
-        ClipData clip = ClipData.newPlainText("password", entry.password);
-        ((ClipboardManager) getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(clip);
-        Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
+        copyPassword(entry);
       }
     });
 
@@ -404,7 +404,7 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
     builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int which) {
         passphrase = pass.getText().toString();
-        if (!passphrase.isEmpty()) new ReadEntriesTask().execute(passphrase);
+        if (passphrase.length() != 0) new ReadEntriesTask().execute(passphrase);
       }
     });
 
@@ -412,11 +412,11 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
   }
 
   private void updateEntries() {
-    if (settings.getString("passwords", "").isEmpty() || settings.getString("key_file", "").isEmpty()) {
+    if (settings.getString("passwords", "").length() == 0 || settings.getString("key_file", "").length() == 0) {
       setEmptyText(R.string.settings);
     } else {
       setEmptyText(R.string.locked);
-      if (passphrase.isEmpty()) {
+      if (passphrase.length() == 0) {
         getPassphrase();
       } else {
         new ReadEntriesTask().execute(passphrase);
@@ -429,6 +429,20 @@ public class Vecna extends ListActivity implements SearchView.OnQueryTextListene
   }
 
   private boolean isLocked() {
-    return passphrase.isEmpty();
+    return passphrase.length() == 0;
+  }
+
+  @SuppressWarnings("deprecation")
+  private void copyPassword(Entry entry) {
+
+    int sdk = Build.VERSION.SDK_INT;
+    if (sdk < 11) {
+      ((android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).setText(entry.password);
+    } else {
+      ClipData data = ClipData.newPlainText("simple text", entry.password);
+      ((android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(data);
+    }
+
+    Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
   }
 }

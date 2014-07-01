@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:vecna="http://schemas.android.com/apk/res-auto">
   <item android:id="@+id/search"
     android:icon="@drawable/ic_menu_search"
-    android:showAsAction="always|withText"
-    android:actionViewClass="android.widget.SearchView"
+    vecna:showAsAction="always|withText"
+    vecna:actionViewClass="android.support.v7.widget.SearchView"
     android:title="@string/menu_search" />
   <item android:id="@+id/lock"
     android:icon="@drawable/ic_menu_lock"
-    android:showAsAction="ifRoom|withText"
+    vecna:showAsAction="ifRoom|withText"
     android:title="@string/menu_lock" />
   <item android:id="@+id/refresh"
-    android:showAsAction="never"
+    vecna:showAsAction="never"
     android:title="@string/menu_refresh" />
   <item android:id="@+id/settings"
-    android:showAsAction="never"
+    vecna:showAsAction="never"
     android:title="@string/menu_settings" />
   <item android:id="@+id/help"
-    android:showAsAction="never"
+    vecna:showAsAction="never"
     android:title="@string/menu_help" />
 </menu>
