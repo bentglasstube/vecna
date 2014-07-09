@@ -14,9 +14,9 @@ means, you are probably not in the target audience for this app.  After you
 have created your key pair, export the secret key and copy it to your phone
 somewhere.
 
-I'm not sure if this app will work with GPG keys from Android Privacy Guard.  I
-intend to do some more testing with that at some point in the future, but the
-app meets my requirements so my interest in developing it further wanes.
+The app should also work with keys generated with [Android Privacy
+Guard][http://www.thialfihar.org/projects/apg/] (APG v1.1.0, Vecna v1.5) so you
+don't have to muck around with exporting keys.
 
 You will also have to create your password file.  The app cannot edit any
 passwords at this time, although I plan on allowing that in the future.  The
