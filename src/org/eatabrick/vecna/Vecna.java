@@ -22,6 +22,7 @@
 package org.eatabrick.vecna;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -159,22 +160,8 @@ public class Vecna extends ActionBarListActivity implements SearchView.OnQueryTe
         publishProgress(R.string.progress_decrypt);
 
         factory = new PGPObjectFactory(dataEncrypted.getDataStream(keyPrivate, "SC"));
-        Object message = factory.nextObject();
-
-        if (message instanceof PGPCompressedData) {
-          PGPObjectFactory f = new PGPObjectFactory(((PGPCompressedData) message).getDataStream());
-          message = f.nextObject();
-        }
-
         ByteArrayOutputStream dataFinal = new ByteArrayOutputStream();
-        if (message instanceof PGPLiteralData) {
-          InputStream s = ((PGPLiteralData) message).getInputStream();
-
-          int ch;
-          while ((ch = s.read()) >= 0) {
-            dataFinal.write(ch);
-          }
-        } else {
+        if (!populateStreamFromFactory(factory, dataFinal)) {
           return R.string.error_encryption;
         }
 
@@ -444,5 +431,32 @@ public class Vecna extends ActionBarListActivity implements SearchView.OnQueryTe
     }
 
     Toast.makeText(Vecna.this, getString(R.string.copied, entry.account), Toast.LENGTH_SHORT).show();
+  }
+
+  private boolean populateStreamFromFactory(PGPObjectFactory factory, ByteArrayOutputStream stream) throws IOException, PGPException {
+    Object message = factory.nextObject();;
+
+    while (message != null) {
+      if (message instanceof PGPCompressedData) {
+        PGPObjectFactory subFactory = new PGPObjectFactory(((PGPCompressedData) message).getDataStream());
+        if (populateStreamFromFactory(subFactory, stream)) {
+          return true;
+        }
+      } else if (message instanceof PGPLiteralData) {
+        InputStream s = ((PGPLiteralData) message).getInputStream();
+
+        int ch;
+        while ((ch = s.read()) >= 0) {
+          stream.write(ch);
+        }
+        return true;
+      } else {
+        Log.d(TAG, "Unknown PGP object: " + message.getClass());
+      }
+
+      message = factory.nextObject();
+    }
+
+    return false;
   }
 }
